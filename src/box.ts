@@ -150,13 +150,16 @@ export async function list(boxurl: URL, flags: BoxFlags) {
       await Deno.readFile(new URL(`./data.json`, boxurl))
     )
   );
+  let list = [];
   if (flags.version) {
-    return data.version.filter(({ version }) => version == flags.version);
+    list = data.version.filter(({ version }) => version == flags.version);
+  } else {
+    list = data.version;
   }
   if (flags.limit) {
-    return data.version.slice(0, Number(flags.limit));
+    return list.slice(0, Number(flags.limit));
   } else {
-    return data.version;
+    return list;
   }
 }
 
