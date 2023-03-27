@@ -161,11 +161,25 @@ export async function list(boxurl: URL, flags: BoxFlags) {
     list = list.slice(0, Number(flags.limit));
   }
 
-  const table: string[][] = [];
-  list.forEach(({ uuid, version, msg }) => {
+  const table: string[][] = [["version", "uuid", "message"]];
+  list.forEach(({ version, uuid, msg }) => {
     table.push([version, uuid, msg]);
   });
   return new Table(...table).toString();
+}
+
+export async function boxlist(boxurl: URL, flags: BoxFlags) {
+  let list = [["name"]];
+
+  for await (const dirEntry of Deno.readDir(boxurl)) {
+    list.push([dirEntry.name]);
+  }
+
+  if (flags.limit) {
+    list = list.slice(0, Number(flags.limit));
+  }
+
+  return new Table(...list).toString();
 }
 
 export type BoxData = {

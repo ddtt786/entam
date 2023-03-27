@@ -1,40 +1,50 @@
 import { parse } from "https://deno.land/std@0.181.0/flags/mod.ts";
 import { exists } from "./src/lib.ts";
-import { BoxFlags, archive, list, packaging, watch } from "./src/box.ts";
+import {
+  BoxFlags,
+  archive,
+  boxlist,
+  list,
+  packaging,
+  watch,
+} from "./src/box.ts";
 
 export const cwdurl = new URL(`file:///${Deno.cwd()}/`);
-export const evmurl = localStorage.getItem("url") ?? "";
+export const entamurl = localStorage.getItem("url") ?? "";
 
+const flags: BoxFlags = parse(Deno.args, {
+  string: ["data", "version", "n"],
+});
 switch (Deno.args[0]) {
   case "init":
     await init();
     break;
   case "create":
-    if (evmurl == "") {
+    if (entamurl == "") {
       console.error("init 명령어를 실행하셨나요?");
       Deno.exit();
     }
     await create(Deno.args[1]);
+    break;
+  case "list":
+    console.log(await boxlist(new URL(entamurl), flags));
     break;
   default:
     if (Deno.args[0] == undefined) {
       console.log("❤ entam");
       Deno.exit();
     }
-    if (evmurl == "") {
+    if (entamurl == "") {
       console.error("init 명령어를 실행하셨나요?");
       Deno.exit();
     }
     {
       const box = Deno.args[0];
-      const boxurl = new URL(`./${box}/`, evmurl);
+      const boxurl = new URL(`./${box}/`, entamurl);
       if (!(await exists(new URL("./data.json", boxurl)))) {
         console.error(`"${box}" 상자가 없거나 손상되었습니다.`);
         Deno.exit();
       }
-      const flags: BoxFlags = parse(Deno.args, {
-        string: ["data", "version", "n"],
-      });
       switch (Deno.args[1]) {
         case "archive":
           await archive(boxurl, flags);
@@ -74,7 +84,7 @@ async function init() {
 
 async function create(dir: string) {
   try {
-    const path = new URL(`./${dir}/`, evmurl);
+    const path = new URL(`./${dir}/`, entamurl);
     await Deno.mkdir(path);
     Deno.writeFile(
       new URL("./data.json", path.toString()),
