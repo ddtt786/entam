@@ -61,9 +61,6 @@ switch (Deno.args[0]) {
     }
     break;
 }
-// import { tgz } from "https://deno.land/x/compress@v0.4.5/mod.ts";
-
-// await tgz.compress("./project.json", "./test.tgz");
 
 async function init() {
   try {
