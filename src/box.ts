@@ -1,4 +1,4 @@
-import { tgz } from "https://deno.land/x/compress@v0.4.4/mod.ts";
+import { tgz, gzip, gunzip } from "https://deno.land/x/compress@v0.4.4/mod.ts";
 import { cwdurl } from "../cli.ts";
 import { exists } from "./lib.ts";
 import { path } from "https://deno.land/x/compress@v0.4.4/deps.ts";
@@ -49,9 +49,13 @@ export async function archive(boxurl: URL, flags: BoxFlags) {
       path.fromFileUrl(new URL(boxurl).toString())
     );
     if (await exists(new URL("./temp/project.json", boxurl))) {
-      Deno.rename(
+      Deno.renameSync(
         new URL("./temp/project.json", boxurl),
         new URL(`./${uuid}.json`, boxurl)
+      );
+      Deno.writeFileSync(
+        new URL(`./${uuid}.json`, boxurl),
+        gzip(Deno.readFileSync(new URL(`./${uuid}.json`, boxurl)))
       );
     } else {
       console.error("심각한 문제 : project.json 파일이 없습니다.");
@@ -93,7 +97,7 @@ export function packaging(boxurl: URL, flags: BoxFlags) {
         const tempPath = new URL(`file:///${Deno.makeTempDirSync()}/`);
         const targetData = JSON.parse(
           new TextDecoder().decode(
-            Deno.readFileSync(new URL(`./${uuid}.json`, boxurl))
+            gunzip(Deno.readFileSync(new URL(`./${uuid}.json`, boxurl)))
           )
         );
         console.log("리소스를 불러오는 중...");
@@ -169,7 +173,7 @@ export async function list(boxurl: URL, flags: BoxFlags) {
 }
 
 export async function boxlist(boxurl: URL, flags: BoxFlags) {
-  let list = [["name"]];
+  let list = [];
 
   for await (const dirEntry of Deno.readDir(boxurl)) {
     list.push([dirEntry.name]);
