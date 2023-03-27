@@ -15,7 +15,7 @@ irm https://deno.land/install.ps1 | iex
 deno를 설치한 다음, cli를 설치합니다.
 
 ```powershell
-deno install -A -f -n entam https://deno.land/x/dutarch@1.0.1/cli.ts
+deno install -A -f -n entam https://deno.land/x/dutarch/cli.ts
 ```
 
 현 위치를 entam의 저장소로 설정합니다.
