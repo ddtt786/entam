@@ -68,9 +68,7 @@ async function init() {
     console.log(new URL("./.entam/", cwdurl).toString());
     localStorage.setItem("url", new URL("./.entam/", cwdurl).toString());
   } catch (_) {
-    console.log(
-      "init을 할 수 없습니다.\n.entam 폴더가 이미 있는지 확인하세요."
-    );
+    localStorage.setItem("url", new URL("./.entam/", cwdurl).toString());
   }
 }
 
