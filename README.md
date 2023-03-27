@@ -68,19 +68,10 @@ version과 msg를 지정하지 않아도 아카이브를 생성하는 것에 큰
 entam box_name list
 ```
 
-```json
-[
-  {
-    "uuid": "3b7e7e8a-ccd7-45d4-8650-b8fb718d0a45",
-    "version": "0.0.2",
-    "msg": "update"
-  },
-  {
-    "uuid": "5934996d-e56d-41c3-a9dd-5f008870aa4c",
-    "version": "0.0.1",
-    "msg": "init"
-  }
-]
+```
+0.0.2 3e87c918-b7bc-4c7a-8f17-a05d8c6bcdb5 update
+0.0.2 3b7e7e8a-ccd7-45d4-8650-b8fb718d0a45 update
+0.0.1 5934996d-e56d-41c3-a9dd-5f008870aa4c init
 ```
 
 한도를 지정해 확인할 수 있습니다.
@@ -89,14 +80,8 @@ entam box_name list
 entam box_name list --limit 1
 ```
 
-```json
-[
-  {
-    "uuid": "3b7e7e8a-ccd7-45d4-8650-b8fb718d0a45",
-    "version": "0.0.2",
-    "msg": "update"
-  }
-]
+```
+0.0.2 3e87c918-b7bc-4c7a-8f17-a05d8c6bcdb5 update
 ```
 
 특정 버전의 목록만 확인할 수 있습니다.
@@ -105,19 +90,9 @@ entam box_name list --limit 1
 entam box_name list --version 0.0.2
 ```
 
-```json
-[
-  {
-    "uuid": "3e87c918-b7bc-4c7a-8f17-a05d8c6bcdb5",
-    "version": "0.0.2",
-    "msg": "update"
-  },
-  {
-    "uuid": "3b7e7e8a-ccd7-45d4-8650-b8fb718d0a45",
-    "version": "0.0.2",
-    "msg": "test"
-  }
-]
+```
+0.0.2 3e87c918-b7bc-4c7a-8f17-a05d8c6bcdb5 update
+0.0.2 3b7e7e8a-ccd7-45d4-8650-b8fb718d0a45 update
 ```
 
 ### 아카이브 다운로드

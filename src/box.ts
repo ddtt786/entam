@@ -4,6 +4,7 @@ import { exists } from "./lib.ts";
 import { path } from "https://deno.land/x/compress@v0.4.4/deps.ts";
 import { sprite } from "./sprite.ts";
 import { dirname } from "https://deno.land/std@0.181.0/path/mod.ts";
+import { Table } from "https://deno.land/x/cliffy@v0.25.7/table/mod.ts";
 
 export async function watch(boxurl: URL, watch: string) {
   if (watch == undefined) {
@@ -157,10 +158,14 @@ export async function list(boxurl: URL, flags: BoxFlags) {
     list = data.version;
   }
   if (flags.limit) {
-    return list.slice(0, Number(flags.limit));
-  } else {
-    return list;
+    list = list.slice(0, Number(flags.limit));
   }
+
+  const table: string[][] = [];
+  list.forEach(({ uuid, version, msg }) => {
+    table.push([version, uuid, msg]);
+  });
+  return new Table(...table).toString();
 }
 
 export type BoxData = {
