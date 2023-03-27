@@ -37,7 +37,7 @@ export async function archive(boxurl: URL, flags: BoxFlags) {
   );
   if (data.watch == null) {
     console.error(
-      `상자에서 주시하고 있는 파일이 없습니다.\n--watch flag를 사용하세요.`
+      `상자에서 주시하고 있는 파일이 없습니다.\nwatch 명령어를 사용하세요.`
     );
     Deno.exit();
   }
