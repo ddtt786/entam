@@ -1,9 +1,9 @@
 import { archive, archiveList, loadArchive } from "./archive.ts";
 import { args } from "./args.ts";
-import { boxData, createBox } from "./box.ts";
-import { BoxError, CommandError } from "./error.ts";
+import { boxList, createBox } from "./box.ts";
+import { CommandError } from "./error.ts";
 
-type Command = "create";
+type Command = "create" | "list";
 type BoxCommand = "list" | "load";
 const command = args._[0] as Command;
 const boxCommand = args._[1] as BoxCommand;
@@ -20,6 +20,10 @@ const commands = {
         "entam create <box_name>"
       );
     }
+  },
+  async list() {
+    await boxList();
+    Deno.exit();
   },
 };
 

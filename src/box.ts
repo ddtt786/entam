@@ -3,8 +3,8 @@ import { dataDir, exists } from "./lib.ts";
 import { BoxCreationError, BoxDuplicateError } from "./error.ts";
 import { Command, commands } from "./command.ts";
 import { ArchiveData } from "./archive.ts";
-import { tar } from "https://deno.land/x/compress@v0.4.4/mod.ts";
-import { gunzip } from "https://deno.land/x/compress@v0.4.4/gzip/gzip.ts";
+import { gunzip } from "compress";
+import { Table } from "table";
 
 type BoxData = {
   watch: string | null;
@@ -101,5 +101,13 @@ async function watch(name: string, target: string) {
   }
 }
 
-export { boxDir, boxData, archiveData, isBoxExists, createBox, watch };
+async function boxList() {
+  const table: Table = Table.from([]);
+  for await (const dirEntry of Deno.readDir(dataDir)) {
+    table.push([dirEntry.name]);
+  }
+  table.render();
+}
+
+export { boxDir, boxData, archiveData, isBoxExists, createBox, watch, boxList };
 export type { BoxData, ArchiveData };
