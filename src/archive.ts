@@ -152,6 +152,9 @@ async function archiveList(name: string) {
   if (args.limit) {
     data.list = data.list.slice(0, Number(args.limit));
   }
+  if (args.tag) {
+    data.list = data.list.filter((d) => d.tag == args.tag);
+  }
   if (args.gt) {
     data.list = data.list.filter((d) => gt(d.tag, args.gt as string));
   }
