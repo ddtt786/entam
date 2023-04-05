@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "datadir": "https://deno.land/x/dir@1.5.1/mod.ts",
+    "path": "https://deno.land/std@0.182.0/path/mod.ts",
+    "flags": "https://deno.land/std@0.182.0/flags/mod.ts",
+    "chalk": "npm:chalk@5",
+    "compress": "https://deno.land/x/compress@v0.4.5/mod.ts",
+    "table": "https://deno.land/x/cliffy@v0.25.7/table/mod.ts",
+    "semver": "https://deno.land/std@0.182.0/semver/mod.ts"
+  }
+}

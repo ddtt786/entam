@@ -1,104 +1,45 @@
-import { parse } from "https://deno.land/std@0.181.0/flags/mod.ts";
+import * as path from "path";
+import { dataDir } from "./src/lib.ts";
+import { command, commands, boxCommands, boxCommand } from "./src/command.ts";
 import { exists } from "./src/lib.ts";
-import {
-  BoxFlags,
-  archive,
-  boxlist,
-  list,
-  packaging,
-  watch,
-} from "./src/box.ts";
+import { args } from "./src/args.ts";
+import { isBoxExists, watch } from "./src/box.ts";
+import { BoxError } from "./src/error.ts";
+import "./log.ts";
+import { logError } from "./log.ts";
 
-export const cwdurl = new URL(`file:///${Deno.cwd()}/`);
-export const entamurl = localStorage.getItem("url") ?? "";
-
-const flags: BoxFlags = parse(Deno.args, {
-  string: ["data", "version", "n"],
-});
-switch (Deno.args[0]) {
-  case "init":
-    await init();
-    break;
-  case "create":
-    if (entamurl == "") {
-      console.error("init 명령어를 실행하셨나요?");
-      Deno.exit();
-    }
-    await create(Deno.args[1]);
-    break;
-  case "list":
-    console.log(await boxlist(new URL(entamurl), flags));
-    break;
-  default:
-    if (Deno.args[0] == undefined) {
-      console.log("❤ entam");
-      Deno.exit();
-    }
-    if (entamurl == "") {
-      console.error("init 명령어를 실행하셨나요?");
-      Deno.exit();
-    }
-    {
-      const box = Deno.args[0];
-      const boxurl = new URL(`./${box}/`, entamurl);
-      if (!(await exists(new URL("./data.json", boxurl)))) {
-        console.error(`"${box}" 상자가 없거나 손상되었습니다.`);
-        Deno.exit();
-      }
-      switch (Deno.args[1]) {
-        case "archive":
-          await archive(boxurl, flags);
-          break;
-
-        case "list":
-          console.log(await list(boxurl, flags));
-          break;
-
-        case "watch":
-          await watch(boxurl, Deno.args[2]);
-          break;
-
-        case "pack":
-          packaging(boxurl, flags);
-          break;
-        case undefined:
-          console.error("아무 일도 일어나지 않았네요.");
-          break;
-
-        default:
-          console.error(`"${Deno.args[1]}" 라는 명령어는 없습니다.`);
-      }
-    }
-    break;
+if (!(await exists(path.join(dataDir)))) {
+  await Deno.mkdir(path.join(dataDir));
 }
 
-async function init() {
-  try {
-    await Deno.mkdir(".entam");
-    console.log(new URL("./.entam/", cwdurl).toString());
-    localStorage.setItem("url", new URL("./.entam/", cwdurl).toString());
-  } catch (_) {
-    localStorage.setItem("url", new URL("./.entam/", cwdurl).toString());
+if (command) {
+  if (commands[command]) {
+    try {
+      await commands[command]();
+    } catch (error) {
+      logError(error);
+    }
   }
-}
-
-async function create(dir: string) {
-  try {
-    const path = new URL(`./${dir}/`, entamurl);
-    await Deno.mkdir(path);
-    Deno.writeFile(
-      new URL("./data.json", path.toString()),
-      new TextEncoder().encode(
-        JSON.stringify({
-          watch: null,
-          version: [],
-        })
-      )
-    );
-    console.log(`${dir} 상자를 만들었습니다.`);
-  } catch (_) {
-    console.log(
-      `상자를 만들 수 없습니다. 이미 ${dir} 이름의 상자가 있을 수 있습니다.`
-    );
+  if (await isBoxExists(command)) {
+    if (boxCommand) {
+      try {
+        await boxCommands[boxCommand]();
+      } catch (error) {
+        logError(error);
+      }
+    } else {
+      if (args.watch) {
+        await watch(command, args.watch);
+      }
+    }
+  } else {
+    try {
+      throw new BoxError(
+        `${command} 상자가 없습니다.`,
+        `entam create ${command} --watch <file_path>를 시도하세요.`
+      );
+    } catch (error) {
+      logError(error);
+    }
   }
 }
