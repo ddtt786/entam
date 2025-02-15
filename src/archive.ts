@@ -130,7 +130,7 @@ async function loadArchive(name: string, uuid: string) {
     });
   });
   console.log("정보를 불러오는 중...");
-  Deno.writeFile(
+  await Deno.writeFile(
     path.join(tempDir, "temp", "./project.json"),
     new TextEncoder().encode(JSON.stringify(project))
   );
